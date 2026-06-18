@@ -1,0 +1,83 @@
+* {font-family: 'Poppins', sans-serif;}
+
+body {
+    background: #fffdf6;
+    color: #2c2b29;
+}
+
+#videoEl {
+    border-radius: 12px;
+    width: 100%;
+    max-width: 520px;
+}
+
+.card-result {
+    background: #ddeb9d;
+    border: 1px solid #000;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+}
+
+.label-big {
+    font-size: 50px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.knn-color {color: #349af3;}
+.rf-color {color: #8fe03e;}
+.ens-color {color: #e3a936;}
+
+.model-tag {
+    font-size: 18px;
+    color: #2c2b29;
+    font-weight: 600;
+}
+
+.nav-tabs {border-bottom: 1px solid #000;}
+.nav-link {color: #2c2b29;}
+.nav-link.active{
+    color: #2c2b29;
+    background: #ddeb9d;
+    border-color: #000;
+    font-weight: 600;
+}
+.nav-link:hover { color: #2c2b29; }
+
+.word-input {
+    max-width: 520px;
+    margin: auto;
+    background: #ddeb9d;
+    color: #2c2b29;
+    border-color: #000;
+}
+.word-input:focus {
+    background: #ddeb9d;
+    color: #2c2b29;
+    border-color: #2c2b29;
+    box-shadow: none;
+}
+
+.gesture-card {
+    background: #ddeb9d;
+    border: 1px solid #000;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    width: 120px;
+}
+
+.gesture-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.gesture-card p {
+    margin: 6px 0 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c2b29;
+}
