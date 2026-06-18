@@ -1,139 +1,80 @@
 <!DOCTYPE html>
-<html lang="id">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>
-            SIBI Recognition
-        </title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            body {background: #0f172a; color:  #f1f5f9;}
-            #videoEl {border-radius: 12px; width: 100%; max-width: 520px;}
-            .card-result{
-                background: #1e293b;
-                border: 1px solid #334155;
-                border-radius: 12px;
-                padding: 20px;
-                margin-bottom: 12px;
-            }
-            .label-big { font-size: 5rem; font-weight: 800; line-height: 1; }
-            .knn-color  { color: #38bdf8; }
-            .rf-color   { color: #4ade80; }
-            .ens-color  { color: #f59e0b; }
-            .model-tag  { font-size: 0.75rem; color: #94a3b8; }
-            #status     { font-size: 0.85rem; color: #64748b; }
-        </style>
-    </head>
-    <body>
-        <div class="container py-4">
-            <h2 class="text-center fw-bold mb-1">SIBI Alphabet Recognition</h2>
-            <p class="text-center text-secondary mb-4">KNN vs Random Forest vs Ensemble</p>
-            
-                <div class="row g-4 justify-content-center">
-                    <div class="col-md-6 text-center">
-                        <video id="videoEl" autoplay playsinline></video>
-                        <canvas id="canvas" style="display:none"></canvas>
-                        <p id="status" class="mt-2">Menghubungkan kamera...</p>
-                        <div class="form-check form-switch mt-2 d-flex justify-content-center gap-2">
-                            <input class="form-check-input" type="checkbox" id="togglePredict" checked>
-                            <label class="form-check-label" for="togglePredict">Prediksi Otomatis</label>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIBI Recognition</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-4">
+        <h2 class="text-center fw-bold">SIBI Alphabet Recognition</h2>
+
+        <ul class="nav nav-tabs justify-content-center mb-4">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" id="tab-detect" onclick="switchTab('detect'); return false;">
+                    Gesture to Text
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" id="tab-translate" onclick="switchTab('translate'); return false;">
+                    Text to Gesture
+                </a>
+            </li>
+        </ul>
+        
+        <div id="panel-detect">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <video id="videoEl" autoplay playsinline></video>
+                    <canvas id="canvas" style="display:none"></canvas>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card-result">
+                        <p class="model-tag mb-1"> K-Nearest Neighbor</p>
+                        <div class="label-big knn-color" id="knn-label">-</div>
+                        <div class="mt-2">
+                            <span class="badge bg-primary" id="knn-conf">-</span>
+                            <span class="badge bg-secondary ms-1" id="knn-time">-</span>
                         </div>
                     </div>
 
-        <div class="col-md-5">
-            <div class="card-result">
-                <p class="model-tag mb-1">🔵 K-Nearest Neighbor</p>
-                <div class="label-big knn-color" id="knn-label">-</div>
-                <div class="mt-2">
-                    <span class="badge bg-primary" id="knn-conf">-</span>
-                    <span class="badge bg-secondary ms-1" id="knn-time">-</span>
-                </div>
-            </div>
- 
-            <div class="card-result">
-                <p class="model-tag mb-1">🟢 Random Forest</p>
-                <div class="label-big rf-color" id="rf-label">-</div>
-                <div class="mt-2">
-                    <span class="badge bg-success" id="rf-conf">-</span>
-                    <span class="badge bg-secondary ms-1" id="rf-time">-</span>
-                </div>
-            </div>
-      
-            <div class="card-result">
-                <p class="model-tag mb-1">🟡 Ensemble Voting</p>
-                <div class="label-big ens-color" id="ens-label">-</div>
-                <div class="mt-2">
-                    <span class="badge bg-warning text-dark" id="ens-conf">-</span>
-                    <span class="badge bg-secondary ms-1" id="ens-time">-</span>
+                    <div class="card-result">
+                        <p class="model-tag mb-1"> Random Forest</p>
+                        <div class="label-big rf-color" id="rf-label">-</div>
+                        <div class="mt-2">
+                            <span class="badge bg-primary" id="rf-conf">-</span>
+                            <span class="badge bg-secondary ms-1" id="rf-time">-</span>
+                        </div>
+                    </div>
+
+                    <div class="card-result">
+                        <p class="model-tag mb-1"> Ensemble Voting</p>
+                        <div class="label-big ens-color" id="ens-label">-</div>
+                        <div class="mt-2">
+                            <span class="badge bg-primary" id="ens-conf">-</span>
+                            <span class="badge bg-secondary ms-1" id="ens-time">-</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div id="panel-translate" style="display:none">
+            <div class="text-center mb-4">
+                <input type="text" id="wordInput" class="form-control word-input"
+                    placeholder="Enter Letters or Sentences">
+                <button onclick="showGestures()" class="btn btn-primary mt-2">
+                    Show Gesture
+                </button>
+            </div>
+            <div id="gestureDisplay" class="d-flex flex-wrap gap-3 justify-content-center"></div>
+        </div>
     </div>
-</div>
 
-<script>
-    const video = document.getElementById("videoEl");
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    const status = document.getElementById("status");
-    const toggle = document.getElementById("togglePredict");
-
-    const API_URL = "https://thebell-010-sibi-recognition.hf.space/predict";
-    let predicting = false;
-
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-            video.srcObject = stream;
-            status.textContent = "Kamera aktif";
-            startLoop();
-        })
-        .catch(() => status.textContent = "Kamera tidak ditemukan");
-
-    async function predict() {
-        if (!toggle.checked || predicting) return;
-        predicting = true;
-
-        canvas.width  = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0);
-
-        canvas.toBlob(async (blob) => {
-            const form = new FormData();
-            form.append("file", blob, "frame.jpg");
-
-            try {
-                const res  = await fetch(API_URL, { method: "POST", body: form });
-                const data = await res.json();
-
-                if (data.success) {
-                    document.getElementById("knn-label").textContent = data.KNN_Model.label;
-                    document.getElementById("knn-conf").textContent  = `${data.KNN_Model.confidence}%`;
-                    document.getElementById("knn-time").textContent  = `${data.KNN_Model.time_ms}ms`;
-
-                    document.getElementById("rf-label").textContent  = data.RF_Model.label;
-                    document.getElementById("rf-conf").textContent   = `${data.RF_Model.confidence}%`;
-                    document.getElementById("rf-time").textContent   = `${data.RF_Model.time_ms}ms`;
-
-                    document.getElementById("ens-label").textContent = data.Ensemble_Model.label;
-                    document.getElementById("ens-conf").textContent  = `${data.Ensemble_Model.confidence}%`;
-                    document.getElementById("ens-time").textContent  = `${data.Ensemble_Model.time_ms}ms`;
-
-                    status.textContent = "Prediksi berhasil";
-                } else {
-                    status.textContent = `${data.message}`;
-                }
-            } catch {
-                status.textContent = "Gagal terkoneksi dengan backend";
-            }
-
-            predicting = false;
-        }, "image/jpeg", 0.85);
-    }
-
-    function startLoop() {
-        setInterval(predict, 500);
-    }
-    </script>
-    </body>
+    <script src="script.js"></script>
+</body>
 </html>
